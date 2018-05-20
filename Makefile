@@ -1,4 +1,4 @@
-PKG := github.com/odacremolbap/go-project-template
+REPO := github.com/odacremolbap/go-project-template
 BINARY := project-template
 REGISTRY := pmercado 
 
@@ -8,8 +8,9 @@ ARCHS := amd64 arm64
 OUTPUT_DIR := _output
 SOURCE_FILES:=$(shell find . -name '*.go' | grep -v -E '(./vendor)')
 VERSION ?= $(shell git describe --tags --always --dirty)
+DATE:=$(shell TZ=UTC date +'%y.%m.%d %H:%M:%S')
 GO_FLAGS:=
-GO_LDFLAGS:=
+GO_LDFLAGS:=-X $(REPO)/pkg/version.Version=${VERSION} -X \"$(REPO)/pkg/version.Date=${DATE}\"
 
 # OUTPUT_BINARIES := $(addprefix $(OUTPUT_DIR)/bin/, $(ARCHS)) 
 OUTPUT_BINARIES := $(OUTPUT_DIR)/$(ARCH)/bin/$(BINARY)
@@ -41,7 +42,7 @@ build: $(OUTPUT_BINARIES)
 
 $(OUTPUT_BINARIES): $(SOURCE_FILES)
 	@mkdir -p $(dir OUTPUT_BINARIES)
-	go build $(GO_FLAGS) -ldflags "$(GO_LDFLAGS)" -o $@ $(PKG)/cmd/
+	go build $(GO_FLAGS) -ldflags "$(GO_LDFLAGS)" -o $@ $(REPO)/cmd/
 
 .PHONY: clean
 clean:
