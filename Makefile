@@ -16,7 +16,13 @@ OUTPUT_BINARIES := $(OUTPUT_DIR)/$(ARCH)/bin/$(BINARY)
 
 
 all: build
-
+.PHONY: release
+release: \
+	clean \
+	check \
+	test \
+	all-build
+	
 build-%:
 	@$(MAKE) --no-print-directory ARCH=$* build
 
@@ -27,6 +33,7 @@ all-build: $(addprefix build-, $(ARCHS))
 .PHONY: check
 check:
 	@gofmt -l -s $(SOURCE_FILES) | read; if [ !$$? -eq 0 ]; then gofmt -s -d $(SOURCE_FILES); exit 1; fi
+	@go vet $(shell go list ./... | grep -v '/vendor/')
 
 .PHONY: build
 build: $(OUTPUT_BINARIES)
@@ -35,3 +42,12 @@ build: $(OUTPUT_BINARIES)
 $(OUTPUT_BINARIES): $(SOURCE_FILES)
 	@mkdir -p $(dir OUTPUT_BINARIES)
 	go build $(GO_FLAGS) -ldflags "$(GO_LDFLAGS)" -o $@ $(PKG)/cmd/
+
+.PHONY: clean
+clean:
+	rm -rf _output/
+
+.PHONY: test
+test:
+	go test -v $(shell go list ./... | grep -v '/vendor/')
+

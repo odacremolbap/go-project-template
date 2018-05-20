@@ -1,4 +1,12 @@
+# swap files
+*.swp
+*.swo
 
+# vim temp files
+*~
 
+# releases
 _output/
+
+# vendor management
 .glide/
