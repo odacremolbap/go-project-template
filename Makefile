@@ -12,7 +12,7 @@ GO_FLAGS:=
 GO_LDFLAGS:=
 
 # OUTPUT_BINARIES := $(addprefix $(OUTPUT_DIR)/bin/, $(ARCHS)) 
-OUTPUT_BINARIES := $(OUTPUT_DIR)/$(ARCH)/bin
+OUTPUT_BINARIES := $(OUTPUT_DIR)/$(ARCH)/bin/$(BINARY)
 
 
 all: build
@@ -33,5 +33,5 @@ build: $(OUTPUT_BINARIES)
 
 
 $(OUTPUT_BINARIES): $(SOURCE_FILES)
-	@mkdir -p $(OUTPUT_BINARIES)
-	go build $(GO_FLAGS) -ldflags "$(GO_LDFLAGS)" $(PKG)/cmd/
+	@mkdir -p $(dir OUTPUT_BINARIES)
+	go build $(GO_FLAGS) -ldflags "$(GO_LDFLAGS)" -o $@ $(PKG)/cmd/
